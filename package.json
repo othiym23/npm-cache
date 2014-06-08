@@ -1,0 +1,28 @@
+{
+  "name": "npm-cache",
+  "version": "0.0.0",
+  "description": "API for interacting with the npm cache.",
+  "main": "cache.js",
+  "scripts": {
+    "test": "tap test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/othiym23/npm-cache"
+  },
+  "keywords": [
+    "npm"
+  ],
+  "author": "Forrest L Norvell <ogd@aoaioxxysz.net>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/othiym23/npm-cache/issues"
+  },
+  "homepage": "https://github.com/othiym23/npm-cache",
+  "devDependencies": {
+    "tap": "^0.4.9"
+  },
+  "dependencies": {
+    "glob": "^4.0.2"
+  }
+}
