@@ -19,6 +19,12 @@ cache.add(metadata, function (error) {
   if (error) console.error(error.stack);
 });
 ```
+# cache.initialize(callback)
+
+* `callback` {Function}
+  * `error` {Error | null}
+
+Initialize the cache, only creating the cache if it does not exist.
 
 # cache.ls(pieces, depth, callback)
 
