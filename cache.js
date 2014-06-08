@@ -15,27 +15,31 @@ function Cache(location, options) {
 
 Cache.prototype.ls = function ls(pieces, depth, callback) {
   if (!pieces) pieces = [];
-  assert(Array.isArray(pieces), "path components must be an array");
   if (depth === undefined || depth === null) depth = this.depth;
+
+  assert(Array.isArray(pieces), "path components must be an array");
   assert(callback, "ls requires a callback");
 
-  var root = this.location;
-  var target = pieces.join("/").split("@").join("/");
-  if (target.substr(-1) === "/") target = target.substr(0, target.length - 1);
+  var cache = this;
 
-  var prefix = root;
+  var target = pieces.join("/").split("@").join("/");
+  if (target.substr(-1) === "/") target = target.slice(0, target.length - 1);
+
+  var prefix = this.location;
   if (0 === prefix.indexOf(process.env.HOME)) {
-    prefix = '~' + prefix.substr(process.env.HOME.length);
+    prefix = '~' + prefix.slice(process.env.HOME.length);
   }
 
-  var pattern = util.format("%s/{%s,%s/**/*}", root, target, target);
+  var pattern = util.format("%s/{%s,%s/**/*}", this.location, target, target);
   var options = {mark : true, dot : true, maxDepth : depth};
 
-  function canonicalize(f) {
-    var slice = f === target ? path.dirname(target) : target;
-    var relative = f.substr(root.length + 1)
-                    .substr(slice.length)
-                    .replace(/^\//, "");
+  function canonicalize(filename) {
+    var shrinkage = target.length;
+    if (filename === target) shrinkage = path.dirname(target).length;
+
+    var relative = filename.slice(cache.location.length + 1)
+                           .slice(shrinkage)
+                           .replace(/^\//, "");
 
     return path.join(prefix, target, relative);
   }

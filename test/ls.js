@@ -3,8 +3,13 @@ var path = require('path');
 
 var Cache = require('../cache.js');
 
+var resolved = path.relative(
+  process.cwd(),
+  path.resolve(__dirname, 'fixtures/simple-cache')
+);
+
 test("cache ls with incorrect pieces argument type", function (t) {
-  var cache = new Cache('./test/fixtures/simple-cache');
+  var cache = new Cache(resolved);
 
   t.throws(function () {
     cache.ls("ham", null, function () {});
@@ -14,7 +19,7 @@ test("cache ls with incorrect pieces argument type", function (t) {
 });
 
 test("cache ls with missing callback", function (t) {
-  var cache = new Cache('./test/fixtures/simple-cache');
+  var cache = new Cache(resolved);
 
   t.throws(function () {
     cache.ls([], Infinity);
@@ -24,7 +29,7 @@ test("cache ls with missing callback", function (t) {
 });
 
 test("cache ls <all>", function (t) {
-  var cache = new Cache('./test/fixtures/simple-cache');
+  var cache = new Cache(resolved);
 
   cache.ls(null, null, function (error, files) {
     t.notOk(error, "no error was raised");
@@ -35,12 +40,12 @@ test("cache ls <all>", function (t) {
     t.deepEqual(
       files,
       [
-        'test/fixtures/simple-cache',
-        'test/fixtures/simple-cache/yo/',
-        'test/fixtures/simple-cache/yo/1.1.2/',
-        'test/fixtures/simple-cache/yo/1.1.2/package/',
-        'test/fixtures/simple-cache/yo/1.1.2/package.tgz',
-        'test/fixtures/simple-cache/yo/1.1.2/package/package.json'
+        resolved,
+        resolved + '/yo/',
+        resolved + '/yo/1.1.2/',
+        resolved + '/yo/1.1.2/package/',
+        resolved + '/yo/1.1.2/package.tgz',
+        resolved + '/yo/1.1.2/package/package.json'
       ],
       "got expected file listing"
     );
@@ -50,22 +55,22 @@ test("cache ls <all>", function (t) {
 });
 
 test("cache ls yo", function (t) {
-  var cache = new Cache('./test/fixtures/simple-cache');
+  var cache = new Cache(resolved);
 
   cache.ls(['yo'], null, function (error, files) {
     t.notOk(error, "no error was raised");
 
     t.ok(files, "got listing");
 
-    t.equal(files.length, 5, "got the six expected entries");
+    t.equal(files.length, 5, "got the five expected entries");
     t.deepEqual(
       files,
       [
-        'test/fixtures/simple-cache/yo',
-        'test/fixtures/simple-cache/yo/1.1.2/',
-        'test/fixtures/simple-cache/yo/1.1.2/package/',
-        'test/fixtures/simple-cache/yo/1.1.2/package.tgz',
-        'test/fixtures/simple-cache/yo/1.1.2/package/package.json'
+        resolved + '/yo',
+        resolved + '/yo/1.1.2/',
+        resolved + '/yo/1.1.2/package/',
+        resolved + '/yo/1.1.2/package.tgz',
+        resolved + '/yo/1.1.2/package/package.json'
       ],
       "got expected file listing"
     );
@@ -75,21 +80,140 @@ test("cache ls yo", function (t) {
 });
 
 test("cache ls yo 1.1.2", function (t) {
-  var cache = new Cache('./test/fixtures/simple-cache');
+  var cache = new Cache(resolved);
 
   cache.ls(['yo', '1.1.2'], null, function (error, files) {
     t.notOk(error, "no error was raised");
 
     t.ok(files, "got listing");
 
-    t.equal(files.length, 4, "got the six expected entries");
+    t.equal(files.length, 4, "got the four expected entries");
     t.deepEqual(
       files,
       [
-        'test/fixtures/simple-cache/yo/1.1.2',
-        'test/fixtures/simple-cache/yo/1.1.2/package/',
-        'test/fixtures/simple-cache/yo/1.1.2/package.tgz',
-        'test/fixtures/simple-cache/yo/1.1.2/package/package.json'
+        resolved + '/yo/1.1.2',
+        resolved + '/yo/1.1.2/package/',
+        resolved + '/yo/1.1.2/package.tgz',
+        resolved + '/yo/1.1.2/package/package.json'
+      ],
+      "got expected file listing"
+    );
+
+    t.end();
+  });
+});
+
+test("cache ls yo@1.1.2", function (t) {
+  var cache = new Cache(resolved);
+
+  cache.ls(['yo@1.1.2'], null, function (error, files) {
+    t.notOk(error, "no error was raised");
+
+    t.ok(files, "got listing");
+
+    t.equal(files.length, 4, "got the four expected entries");
+    t.deepEqual(
+      files,
+      [
+        resolved + '/yo/1.1.2',
+        resolved + '/yo/1.1.2/package/',
+        resolved + '/yo/1.1.2/package.tgz',
+        resolved + '/yo/1.1.2/package/package.json'
+      ],
+      "got expected file listing"
+    );
+
+    t.end();
+  });
+});
+
+test("cache ls yo --depth=0", function (t) {
+  var cache = new Cache(resolved);
+
+  cache.ls(['yo'], 0, function (error, files) {
+    t.notOk(error, "no error was raised");
+
+    t.ok(files, "got listing");
+
+    t.equal(files.length, 5, "got the five expected entries");
+    t.deepEqual(
+      files,
+      [
+        resolved + '/yo',
+        resolved + '/yo/1.1.2/',
+        resolved + '/yo/1.1.2/package/',
+        resolved + '/yo/1.1.2/package.tgz',
+        resolved + '/yo/1.1.2/package/package.json'
+      ],
+      "got expected file listing"
+    );
+
+    t.end();
+  });
+});
+
+test("cache ls yo --depth=1", function (t) {
+  var cache = new Cache(resolved);
+
+  cache.ls(['yo'], 1, function (error, files) {
+    t.notOk(error, "no error was raised");
+
+    t.ok(files, "got listing");
+
+    t.equal(files.length, 1, "got the expected entry");
+    t.deepEqual(
+      files,
+      [
+        resolved + '/yo'
+      ],
+      "got expected file listing"
+    );
+
+    t.end();
+  });
+});
+
+test("cache ls yo --depth=2", function (t) {
+  var cache = new Cache(resolved);
+
+  cache.ls(['yo'], 2, function (error, files) {
+    t.notOk(error, "no error was raised");
+
+    t.ok(files, "got listing");
+
+    t.equal(files.length, 4, "got the four expected entries");
+    t.deepEqual(
+      files,
+      [
+        resolved + '/yo',
+        resolved + '/yo/1.1.2/',
+        resolved + '/yo/1.1.2/package/',
+        resolved + '/yo/1.1.2/package.tgz'
+      ],
+      "got expected file listing"
+    );
+
+    t.end();
+  });
+});
+
+test("cache ls yo --depth=3", function (t) {
+  var cache = new Cache(resolved);
+
+  cache.ls(['yo'], 3, function (error, files) {
+    t.notOk(error, "no error was raised");
+
+    t.ok(files, "got listing");
+
+    t.equal(files.length, 5, "got the five expected entries");
+    t.deepEqual(
+      files,
+      [
+        resolved + '/yo',
+        resolved + '/yo/1.1.2/',
+        resolved + '/yo/1.1.2/package/',
+        resolved + '/yo/1.1.2/package.tgz',
+        resolved + '/yo/1.1.2/package/package.json'
       ],
       "got expected file listing"
     );
@@ -99,13 +223,13 @@ test("cache ls yo 1.1.2", function (t) {
 });
 
 test("cache ls with full path", function (t) {
-  var resolved = path.resolve(__dirname, 'fixtures/simple-cache');
-  var cache = new Cache(resolved);
+  var full = path.resolve(__dirname, 'fixtures/simple-cache');
+  var cache = new Cache(full);
 
   cache.ls([], null, function (error, files) {
     t.notOk(error, "no error was raised");
 
-    var prefixed = resolved.replace(process.env.HOME, '~');
+    var prefixed = full.replace(process.env.HOME, '~');
     t.equal(files[0], prefixed, "path mangled appropriately");
 
     t.end();
