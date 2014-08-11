@@ -7,5 +7,5 @@ function Cache(location, options) {
   this.depth = options.depth === undefined ? Infinity : options.depth;
 }
 
-Cache.prototype.initialize = require('./lib/initialize.js');
-Cache.prototype.ls = require('./lib/ls.js');
+Cache.prototype.initialize = require("./lib/initialize.js");
+Cache.prototype.ls = require("./lib/ls.js");

@@ -1,14 +1,14 @@
-var path = require('path');
-var stat = require('fs').stat;
+var path = require("path");
+var stat = require("fs").stat;
 
-var test    = require('tap').test;
-var mkdtemp = require('tmp').dir;
+var test    = require("tap").test;
+var mkdtemp = require("tmp").dir;
 
-var Cache = require('../cache.js');
+var Cache = require("../cache.js");
 
 var TEMP_OPTIONS = {
   unsafeCleanup : true,
-  mode          : '0700'
+  mode          : "0700"
 };
 
 test("cache initialize nonexistent directory", function (t) {
@@ -18,7 +18,7 @@ test("cache initialize nonexistent directory", function (t) {
       return t.end();
     }
 
-    var location = path.join(tmpdir, 'npm-cache');
+    var location = path.join(tmpdir, "npm-cache");
     var cache = new Cache(location);
     cache.initialize(function (error) {
       t.notOk(error, "got no error on initialization");
@@ -39,7 +39,7 @@ test("cache initialize already initialized", function (t) {
       return t.end();
     }
 
-    var location = path.join(tmpdir, 'npm-cache');
+    var location = path.join(tmpdir, "npm-cache");
     var cache = new Cache(location);
     cache.initialize(function () {
       cache.initialize(function (error) {
@@ -58,7 +58,7 @@ test("cache initialize already initialized", function (t) {
 test("cache initialize unreadable root", function (t) {
   var options = {
     unsafeCleanup : true,
-    mode          : '0000'
+    mode          : "0000"
   };
 
   mkdtemp(options, function (error, tmpdir) {
@@ -67,7 +67,7 @@ test("cache initialize unreadable root", function (t) {
       return t.end();
     }
 
-    var location = path.join(tmpdir, 'NOPERM');
+    var location = path.join(tmpdir, "NOPERM");
     var cache = new Cache(location);
     cache.initialize(function (error) {
       t.ok(error, "expected failure");
@@ -79,7 +79,7 @@ test("cache initialize unreadable root", function (t) {
 test("cache initialize unwritable root", function (t) {
   var options = {
     unsafeCleanup : true,
-    mode          : '0100'
+    mode          : "0100"
   };
 
   mkdtemp(options, function (error, tmpdir) {
@@ -88,7 +88,7 @@ test("cache initialize unwritable root", function (t) {
       return t.end();
     }
 
-    var location = path.join(tmpdir, 'NOPERM');
+    var location = path.join(tmpdir, "NOPERM");
     var cache = new Cache(location);
     cache.initialize(function (error) {
       t.ok(error, "expected failure");
